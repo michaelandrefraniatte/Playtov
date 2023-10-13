@@ -57,6 +57,7 @@ namespace Playtov
         public KeyboardHook keyboardHook = new KeyboardHook();
         public static int vkCode, scanCode;
         public static bool KeyboardHookButtonDown, KeyboardHookButtonUp;
+        public static bool starting = true;
         public static int[] wd = { 2, 2, 2, 2 };
         public static int[] wu = { 2, 2, 2, 2 };
         public static void valchanged(int n, bool val)
@@ -90,6 +91,8 @@ namespace Playtov
             cy = Screen.PrimaryScreen.Bounds.Height;
             this.Size = new Size(cx, cy);
             this.Location = new Point(x, y);
+            this.label1.Location = new Point(cx / 2 - this.label1.Size.Width / 2, cy / 2 - this.label1.Height / 2 - this.label2.Height);
+            this.label2.Location = new Point(cx / 2 - this.label2.Size.Width / 2, cy / 2 - this.label2.Height / 2 + this.label2.Height);
             CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-gpu", "--disable-gpu-compositing");
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
             await webView21.EnsureCoreWebView2Async(environment);
@@ -105,9 +108,10 @@ namespace Playtov
                 webView21.Source = new Uri(file.ReadLine());
             }
             webView21.Dock = DockStyle.Fill;
-            webView21.DefaultBackgroundColor = Color.Transparent;
             webView21.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
             webView21.CoreWebView2.ContextMenuRequested += CoreWebView2_ContextMenuRequested;
+            webView21.NavigationCompleted += WebView21_NavigationCompleted;
+            webView21.DefaultBackgroundColor = Color.Black;
             this.Controls.Add(webView21);
             using (StreamReader file = new StreamReader("params.txt"))
             {
@@ -116,6 +120,16 @@ namespace Playtov
             }
             if (echoboostenable)
                 Process.Start("EchoBoost.exe");
+        }
+        private void WebView21_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            if (starting)
+            {
+                this.Controls.Remove(label1);
+                this.Controls.Remove(label2);
+                this.Controls.Remove(label3);
+                starting = false;
+            }
         }
         private void CoreWebView2_WebResourceRequested(object sender, CoreWebView2WebResourceRequestedEventArgs e)
         {
