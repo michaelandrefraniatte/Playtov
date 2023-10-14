@@ -93,6 +93,8 @@ namespace Playtov
             this.Location = new Point(x, y);
             this.label1.Location = new Point(cx / 2 - this.label1.Size.Width / 2, cy / 2 - this.label1.Height / 2 - this.label2.Height);
             this.label2.Location = new Point(cx / 2 - this.label2.Size.Width / 2, cy / 2 - this.label2.Height / 2 + this.label2.Height);
+            this.progressBar1.Location = new Point(cx / 2 - this.progressBar1.Size.Width / 2, cy * 2 / 3);
+            Task.Run(() => Loader());
             CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-gpu", "--disable-gpu-compositing");
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
             await webView21.EnsureCoreWebView2Async(environment);
@@ -121,10 +123,19 @@ namespace Playtov
             if (echoboostenable)
                 Process.Start("EchoBoost.exe");
         }
+        private void Loader()
+        {
+            while (this.progressBar1.Value <= 100)
+            {
+                this.progressBar1.Value++;
+                System.Threading.Thread.Sleep(100);
+            }
+        }
         private void WebView21_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             if (starting)
             {
+                this.Controls.Remove(progressBar1);
                 this.Controls.Remove(label1);
                 this.Controls.Remove(label2);
                 this.Controls.Remove(label3);
