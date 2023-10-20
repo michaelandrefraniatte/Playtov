@@ -124,6 +124,15 @@ namespace Playtov
             if (echoboostenable)
                 Process.Start("EchoBoost.exe");
         }
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F1)
+            {
+                const string message = "• Author: Michaël André Franiatte.\n\r\n\r• Copyrights: All rights reserved, no permissions granted.\n\r\n\r• Contact: michael.franiatte@gmail.com.";
+                const string caption = "About";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
         private void Loader()
         {
             while (this.progressBar1.Value <= 100)
