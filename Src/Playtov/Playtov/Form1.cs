@@ -114,6 +114,7 @@ namespace Playtov
             webView21.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
             webView21.CoreWebView2.ContextMenuRequested += CoreWebView2_ContextMenuRequested;
             webView21.NavigationCompleted += WebView21_NavigationCompleted;
+            webView21.KeyDown += WebView21_KeyDown;
             webView21.DefaultBackgroundColor = Color.Black;
             this.Controls.Add(webView21);
             using (StreamReader file = new StreamReader("params.txt"))
@@ -126,11 +127,28 @@ namespace Playtov
         }
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F1)
+            OnKeyDown(e.KeyData);
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) // David
+        {
+            OnKeyDown(keyData);
+            return true;
+        }
+        private void WebView21_KeyDown(object sender, KeyEventArgs e)
+        {
+            OnKeyDown(e.KeyData);
+        }
+        private void OnKeyDown(Keys keyData)
+        {
+            if (keyData == Keys.F1)
             {
                 const string message = "• Author: Michaël André Franiatte.\n\r\n\r• Copyrights: All rights reserved, no permissions granted.\n\r\n\r• Contact: michael.franiatte@gmail.com.";
                 const string caption = "About";
                 MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            if (keyData == Keys.Escape)
+            {
+                this.Close();
             }
         }
         private void Loader()
